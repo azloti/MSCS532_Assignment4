@@ -4,6 +4,7 @@ import random
 
 from quick_sort import quick_sort
 from heap_sort import heap_sort
+from merge_sort import merge_sort
 
 array_length = 10000
 
@@ -30,26 +31,34 @@ def test_sort_speed(name, array, function):
     end_time = time.time()
 
     time_in_ms = 1000 * (end_time - start_time)
-    print(function.__name__, name, f"Time: {time_in_ms:.2f} ms")
-    return end_time - start_time
+    return time_in_ms
 
-def test_both_algorithms(name, array):
+def test_all_algorithms(name, array):
     quick_time = test_sort_speed(name, array, quick_sort)
     heap_time = test_sort_speed(name, array, heap_sort)
+    merge_time = test_sort_speed(name, array, merge_sort)
 
-    diff_in_ms = (quick_time - heap_time) * 1000
-    if diff_in_ms > 0:
-        print("Heap sort is faster by ", diff_in_ms, " milliseconds")
+    print(f'{name} of {array_length} elements')
+    # Sort by the fastest algorithm
+    if quick_time < heap_time and quick_time < merge_time:
+        print("Quick sort is the fastest")
+    elif heap_time < quick_time and heap_time < merge_time:
+        print("Heap sort is the fastest")
     else:
-        print("Quick sort is faster by ", -diff_in_ms, " milliseconds")
+        print("Merge sort is the fastest")
+    
+    print(f'Quick sort time: {quick_time:.2f} ms')
+    print(f'Heap sort time: {heap_time:.2f} ms')
+    print(f'Merge sort time: {merge_time:.2f} ms')
+    print()
     print()
 
 # Increase the recursion limit, otherwise the code will throw RecursionError for large arrays
 sys.setrecursionlimit(20000)
 
 # Random array
-test_both_algorithms("Random array", random_array)
-test_both_algorithms("Already sorted array", already_sorted)
-test_both_algorithms("Reverse sorted array", reverse_sorted)
-test_both_algorithms("Repeated elements array", repeated_elements)
-test_both_algorithms("All elements equal array", all_elements_equal)
+test_all_algorithms("Random array", random_array)
+test_all_algorithms("Already sorted array", already_sorted)
+test_all_algorithms("Reverse sorted array", reverse_sorted)
+test_all_algorithms("Repeated elements array", repeated_elements)
+test_all_algorithms("All elements equal array", all_elements_equal)
